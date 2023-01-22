@@ -33,7 +33,7 @@ const submit = async () => {
   loading.value = true
   try {
     localStorage.setItem(TTSVoiceGenerateParamsKey, JSON.stringify(toRaw(form.value)))
-    const { path } = await generateTTSVoice(form.value)
+    const { path } = await generateTTSVoice({ ...form.value, text: form.value.text.replace(/\n/g, ' ') })
     mp3.value = `/tts-res-static/${path}`
   } finally {
     loading.value = false
@@ -56,7 +56,7 @@ const beforeUpload = async (file: File) => {
 const markSelectedText = (lang: 'ZH' | 'JA' | 'EN') => {
   const el = textInputRef.value.resizableTextArea.textArea as HTMLInputElement
   const { selectionStart: start, selectionEnd: end } = el
-  if (!(typeof start === 'number' &&  typeof end === 'number') || start === end) {
+  if (!(typeof start === 'number' && typeof end === 'number') || start === end) {
     message.error('需要选中分区')
     return
   }
@@ -67,7 +67,7 @@ const markSelectedText = (lang: 'ZH' | 'JA' | 'EN') => {
 }
 
 const clearTextMark = () => {
-  form.value.text = form.value.text.replace(/\[((EN)|(ZH)|(JA))\]/g,'')
+  form.value.text = form.value.text.replace(/\[((EN)|(ZH)|(JA))\]/g, '')
 }
 </script>
 
@@ -78,17 +78,20 @@ const clearTextMark = () => {
       <a-textarea auto-size v-model:value="form.text" ref="textInputRef">
 
       </a-textarea>
-      <div class="mark-as">
-        标记为
-        <a-button size="small" @click="markSelectedText('ZH')">
-          中
-        </a-button>
-        <a-button size="small" @click="markSelectedText('JA')">
-          日
-        </a-button>
-        <a-button size="small" @click="markSelectedText('EN')">
-          英
-        </a-button>
+      <div class="text-toolbar">
+
+        <div class="mark-as">
+          标记选中为
+          <a-button size="small" @click="markSelectedText('ZH')">
+            中
+          </a-button>
+          <a-button size="small" @click="markSelectedText('JA')">
+            日
+          </a-button>
+          <a-button size="small" @click="markSelectedText('EN')">
+            英
+          </a-button>
+        </div>
         <div class="flex-placeholder"></div>
         <a-button size="small" @click="clearTextMark">
           清理所有标记
@@ -129,9 +132,8 @@ const clearTextMark = () => {
 .flex-placeholder {
   flex: 1;
 }
+
 .form {
-  width: 100%;
-  padding: 16px;
 
   .json-preview {
     max-height: 256px;
@@ -144,12 +146,22 @@ const clearTextMark = () => {
     color: black;
   }
 
-  .mark-as {
-    margin-top: 4px;
+  .text-toolbar {
+
     display: flex;
     align-items: center;
-    & > * {
-      margin-right: 4px;
+
+    .mark-as {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      padding: 4px 8px;
+      background-color: #eee;
+      border-radius: 50vw;
+
+      &>* {
+        margin-left: 4px;
+      }
     }
   }
 }
