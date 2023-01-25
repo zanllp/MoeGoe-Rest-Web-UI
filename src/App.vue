@@ -10,9 +10,7 @@ import TtsVoice from './components/TTSVoice.vue';
 
 <style scoped>
 .form-wrap {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 24px;
+  height: 100vh;
 }
 </style>
  d

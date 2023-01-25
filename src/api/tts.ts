@@ -18,6 +18,9 @@ export const generateTTSVoice = async (body: TTSVoiceGenerateParams) => {
 export type PretrainedModel = {
   name: string
   speakers: string[]
+  data: {
+    text_cleaners: ['cjks_cleaners'] | ['japanese_cleaners']
+  }
 }
 
 export const listPretrainedModels = async () => {
